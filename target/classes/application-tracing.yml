@@ -1,0 +1,57 @@
+# 定義要回傳的欄位名稱
+mimosa:
+  tracing:
+    extra:
+      fields:
+        - "transactionId"
+        - "sourceId"
+        - "clientIp"
+# 幫助效能查找 會計算執行時間與所佔的百分比
+    traced:
+      style: PRETTY_PRINT
+# 回傳應用程式名稱
+info:
+  response:
+    id: ${spring.application.name}
+
+# log console template 
+logging:
+  pattern:
+    console: "%clr(%date){faint} %clr(%5p) [${spring.application.name},%X{traceId},%X{spanId},%X{parentSpanId},%X{traceSampled},%X{system-id},%X{operator-id}] %clr(${PID}){magenta} %clr(---){faint} %clr([%t]){faint} %clr(%logger.%M#%line){cyan} %clr(:){faint} %m%n%wEx"
+
+# open tracing
+opentracing:
+  jaeger:
+    enabled: true
+    enable-b3-propagation: true
+    enable128-bit-traces: true
+    udp-sender:
+      host: ${JAEGER_HOST:localhost}
+      port: ${JAEGER_PORT:6831}
+    log-spans: true
+    const-sampler:
+      decision: true
+    probabilistic-sampler:
+      sampling-rate: 1.00
+  spring:
+    web:
+      enabled: true
+      client:
+        enabled: true
+    cloud:
+      feign:
+        enabled: true
+      reactor:
+        enabled: false
+      async:
+        enabled: true
+      log:
+        enabled: true
+      scheduled:
+        enabled: true
+      redis:
+        enabled: true
+      jdbc:
+        enabled: true
+      jms:
+        enabled: false
